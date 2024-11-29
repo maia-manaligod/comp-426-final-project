@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Questions = () =>  {
     const [loading, setLoading] = useState(true)
+    const [userID, setUserID] = useState(null)
     const navigate = useNavigate()
 
     const [questionSet, setQuestionSet] = useState(null)
@@ -18,18 +19,24 @@ const Questions = () =>  {
     const [currentQuestion, setCurrentQuestion] = useState(null)
     const[score, setScore] = useState(0)
 
+    if (!userID){
         execute_get('/loggedin').then((data) => {
             console.log("@question, loggedin", data)
-            if (data)  setLoading(false)
+            if (data)  {
+                setUserID(data)
+                setLoading(false)
+            }
             else navigate('/login')
         })
+    }
+    
     
     const getQuestions = () => {
-        axios.get('http://localhost:8080/questions').then((data) => {
-          console.log(data.data)
-          setQuestionSet(data.data.questionSet)
-          console.log(data.data.questionSet[0])
-          setCurrentQuestion(data.data.questionSet[0])
+        execute_get('/questions').then((data) => {
+          console.log("data.data" , data)
+          setQuestionSet(data.questionSet)
+          console.log(data.questionSet[0])
+          setCurrentQuestion(data.questionSet[0])
           setIndex(0)
           setScore(0)
         }) 
@@ -58,7 +65,7 @@ const Questions = () =>  {
                     index < 10 ? 
                     <>
                     <p>Question {index + 1} of 10</p>
-                     <Question key = {index} q = {currentQuestion} onAnswer = {onAnswer}/>
+                     <Question key = {index} q = {currentQuestion} onAnswer = {onAnswer} userID = {userID}/>
                     </>
                     : 
                     <div>

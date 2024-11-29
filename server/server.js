@@ -19,6 +19,12 @@ app.get('/questions', async (req, res) => {
     res.status(201).json(questionSet)
 })
 
+app.post('/question', async (req, res)  => {
+    let question = await QuestionSet.postQuestion(req.body)
+    if (!question) res.status(500).send('Error')
+    else res.status(201).send(question)
+})
+
 app.post('/signup', async (req, res) => {
     console.log("request",req.body)
     
@@ -27,7 +33,7 @@ app.post('/signup', async (req, res) => {
     if (user == 'exists') res.status(400).send('Username already exists.');
     else if (!user) res.status(500).send('Error processing request');
     else {
-        res.status(201).send(user)
+        res.status(201).json(user)
     }
 }) 
 

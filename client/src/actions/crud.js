@@ -1,7 +1,7 @@
 let port = 8080;
 let host = 'localhost';
 
-export const execute_put = async function (path, data) {
+export const execute_post = async function (path, data) {
     console.log("data, ", data)
     let fetch_result = await fetch('http://' + host + ":" + port + path, {
         method: 'POST',

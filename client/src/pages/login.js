@@ -1,7 +1,7 @@
 import { useState, useEffect} from "react"
 import axios from "axios"
 import {useNavigate} from 'react-router-dom'
-import { execute_put, execute_get } from "../actions/crud";
+import { execute_post, execute_get } from "../actions/crud";
 
 
 
@@ -38,7 +38,7 @@ export default function Login(){
             console.log(formData, formData.password, formData.username)
         
             try {
-                execute_put("/login", {'username': username, 'password' : password})
+                execute_post("/login", {'username': username, 'password' : password})
             //const result = await axios.post('http://localhost:8080/login', )
             //navigate('/')
             } catch (error) {
@@ -79,7 +79,7 @@ export default function Login(){
             console.log(formData, formData.password, formData.username)
         
             try {
-                execute_put("/signup", {'username': username, 'password' : password})
+                execute_post("/signup", {'username': username, 'password' : password})
             //const result = await axios.post('http://localhost:8080/login', )
             //navigate('/')
             } catch (error) {

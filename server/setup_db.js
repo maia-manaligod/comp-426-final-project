@@ -1,6 +1,9 @@
 import {db} from './db.js';
 
 // Use the db object to run table creation commands and otherwise initialize your database setup here.
+
+await db.run('PRAGMA foreign_keys = ON');
+
 await db.run(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -14,9 +17,11 @@ await db.run(`
   await db.run(`
     CREATE TABLE IF NOT EXISTS questions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
       question TEXT NOT NULL,
       correct_answer TEXT NOT NULL,
-      user_answer TEXT NOT NULL
+      user_answer TEXT NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES users(id)
     )
   `);
   
