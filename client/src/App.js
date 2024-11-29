@@ -2,6 +2,7 @@ import axios from 'axios';
 import './App.css';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Questions from './pages/questions';
+import Login from './pages/login';
 //data will be the string we send from our server
 const apiCall = () => {
   axios.get('http://localhost:8080').then((data) => {
@@ -16,10 +17,12 @@ export default function App() {
       <BrowserRouter>
         <nav>
           <Link to="/">Home</Link>
+          <Link to="/login">logout</Link>
         </nav>
 
         <Routes>
           <Route path="/" element={<Questions />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </BrowserRouter>
 
