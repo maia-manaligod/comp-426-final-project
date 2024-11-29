@@ -49,3 +49,7 @@
   border: 1px solid black;
   pointer-events: none;
 }
+
+.disabled {
+  pointer-events: none;
+}

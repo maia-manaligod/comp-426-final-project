@@ -80,4 +80,37 @@ export class User{
 
     }
 
+
+    static async getUserStats(data){
+        let {userID} = data;
+        try{
+            let category_results = await db.all(`
+                select 'Overall' as category,
+                count(case when correct_answer = user_answer then 1 end) as correct_answers,
+                count(*) as total_answered,
+                count(case when correct_answer = user_answer then 1 end) * 1.0 / count(*)  as accuracy
+                from questions
+                where user_id = ?
+
+                union all
+
+                select category, 
+                count(case when correct_answer = user_answer then 1 end) as correct_answers, 
+                count(*) as total_answers,
+                count(case when correct_answer = user_answer then 1 end) * 1.0 /
+                count(*) as category_accuracy
+                from questions
+                where user_id = ?
+                group by category
+            `, [userID, userID])
+    
+            console.log(category_results)
+
+            return category_results
+        } catch (e) {
+            console.log('error', e)
+            return null
+        }
+    }
+
 }

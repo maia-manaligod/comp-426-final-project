@@ -69,6 +69,21 @@ app.get('/loggedin', async (req, res) => {
     }
 })
 
+
+app.get(`/questionHistory`, async (req, res) => {
+    console.log(req.query)
+    const questionHistory = await QuestionSet.getQuestionHistory(req.query)
+    if (!questionHistory) res.status(500).send('bad')
+    else res.status(201).json(questionHistory)
+
+})
+
+app.get(`/userStats`, async (req, res) => {
+    const userStats = await User.getUserStats(req.query)
+    if (!userStats) res.status(500).send('bad')
+    else res.status(201).json(userStats)
+})
+
 app.listen(8080, () => {
       console.log('server listening on port 8080')
 })

@@ -52,14 +52,16 @@ export class QuestionSet{
 
     static async postQuestion(data){
         //post question
+        console.log("question data:, ", data)
 
         try {
             const result1 = await db.run(
-                'insert into questions (question, user_id, correct_answer, user_answer) values (?, ?, ?, ?)',
+                'insert into questions (question, user_id, correct_answer, user_answer, category) values (?, ?, ?, ?, ?)',
                 data.question,
                 data.userID,
                 data.correct_answer,
-                data.user_answer
+                data.user_answer,
+                data.category
             );
 
             const question_id = result1.lastID
@@ -92,8 +94,35 @@ export class QuestionSet{
         }
 
         return data
+    }
 
+    static async getQuestionHistory(data){
+        let {userID, offset} = data
+        console.log(userID, offset)
 
+        try {
+                const questions = await db.all(
+                    `select * from questions left join answers on questions.id = answers.question_id
+                    where user_id = ${userID}
+                    order by id desc
+                    limit 20 offset ${offset}`
+                )
+
+                let res = questions.map((q) => {
+                    return {
+                        "question": q.question, 
+                        "correct_answer": q.correct_answer, 
+                        "user_answer": q.user_answer,
+                        "answers": [q.answer_1, q.answer_2, q.answer_3, q.answer_4],
+                        "category" : q.category
+                    }
+                })
+                console.log("fin", res)
+                return res
+        } catch (e) {
+            console.log("error", e)
+            return null
+        }
     }
 
 

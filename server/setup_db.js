@@ -21,6 +21,7 @@ await db.run(`
       question TEXT NOT NULL,
       correct_answer TEXT NOT NULL,
       user_answer TEXT NOT NULL,
+      category TEXT NOT NULL,
       FOREIGN KEY (user_id) REFERENCES users(id)
     )
   `);
