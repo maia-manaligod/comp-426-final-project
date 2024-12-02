@@ -69,6 +69,12 @@ app.get('/loggedin', async (req, res) => {
     }
 })
 
+app.post('/logout', async (req, res) => {
+    let userID = req.cookies.userID
+    res.clearCookie('userID')
+    res.status(200).send(`${userID}`)
+})
+
 
 app.get(`/questionHistory`, async (req, res) => {
     console.log(req.query)
@@ -83,6 +89,7 @@ app.get(`/userStats`, async (req, res) => {
     if (!userStats) res.status(500).send('bad')
     else res.status(201).json(userStats)
 })
+
 
 app.listen(8080, () => {
       console.log('server listening on port 8080')

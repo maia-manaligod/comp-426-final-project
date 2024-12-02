@@ -104,9 +104,19 @@ export class User{
                 group by category
             `, [userID, userID])
     
+            
+            
+            let results = await db.get(`
+                select username
+                from users 
+                where id = ? 
+            `, userID)
+
             console.log(category_results)
 
-            return category_results
+            results["categoryStats"] = category_results
+
+            return results
         } catch (e) {
             console.log('error', e)
             return null

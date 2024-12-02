@@ -1,7 +1,7 @@
 import { useState, useEffect} from "react"
-import axios from "axios"
 import {useNavigate} from 'react-router-dom'
 import { execute_post, execute_get } from "../actions/crud";
+import "./pages.css"
 
 
 
@@ -25,6 +25,7 @@ export default function Login(){
         const [username, setUsername] = useState('')
         const [password, setPassword] = useState('')
 
+
         
 
         const loginSubmit = async (event) => {
@@ -39,6 +40,7 @@ export default function Login(){
         
             try {
                 execute_post("/login", {'username': username, 'password' : password})
+                navigate('/')
             //const result = await axios.post('http://localhost:8080/login', )
             //navigate('/')
             } catch (error) {
@@ -53,7 +55,8 @@ export default function Login(){
                     <input name = "username" value = {username} onChange={(e) => setUsername(e.target.value)} ></input>
                     <p>password</p>
                     <input name = "password" value = {password} onChange={(e) => setPassword(e.target.value)}></input>
-                    <input type="submit"></input>
+                    <p></p>
+                    <input type="submit" className = "submit"></input>
                 </form>
             </>
             
@@ -94,6 +97,7 @@ export default function Login(){
                     <input name = "username" value = {username} onChange={(e) => setUsername(e.target.value)} ></input>
                     <p>password</p>
                     <input name = "password" value = {password} onChange={(e) => setPassword(e.target.value)}></input>
+                    <p></p>
                     <input type="submit"></input>
                 </form>
             </>
@@ -111,14 +115,19 @@ export default function Login(){
     }
 
     return (
-        <>
+        <div className = "loginbg">
         {!loading && 
-            <>
-            <button onClick = {setLoginTrue}>Login</button>
-            <button onClick = {setLoginFalse}>Sign Up</button>
-            {login ? <LoginForm/> : <SignUpForm/>}
-            </>
+                <div className = "column center-elements">
+                    <div className = "row">
+                        <button onClick = {setLoginTrue}>Login</button>
+                        <button onClick = {setLoginFalse}>Sign Up</button>
+                    </div>
+                <div className = "login-box column">
+                    {login ? <LoginForm/> : <SignUpForm/>}
+                </div>
+               
+            </div>
         }
-        </>
+        </div>
     )
 }
