@@ -1,6 +1,6 @@
 import axios from 'axios';
 import './App.css';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link , Router} from 'react-router-dom';
 import Questions from './pages/questions';
 import Login from './pages/login';
 import QuestionHistory from './pages/questionHistory';
@@ -12,7 +12,10 @@ import { NavBar } from './components/navbar';
 export default function App() {
   return (
     <>
+    <BrowserRouter>
       <NavBar/>
+    </BrowserRouter>
+     
 
 
     </>

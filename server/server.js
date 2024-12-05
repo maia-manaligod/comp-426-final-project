@@ -40,30 +40,39 @@ app.post('/signup', async (req, res) => {
 app.post('/login', async(req, res) => {
     const {username, password} = req.body
     console.log("req", req, req.body, username, password)
+    if (!username || !password) res.status(404).statusMessage('Please fill out both fields')
     
-    let userID = await User.login(req.body)
-    console.log("id:", userID)
-    if (userID == 'does_not_exist'){ res.status(404).send('User Does Not Exist')}
-    else if (userID == 'incorrect_password'){res.status(400).send('Incorrect Password')}
-    else if (!userID) { res.status(500).send("Error processing request")}
+    let user = await User.login(req.body)
+    if (user == 'does_not_exist'){ res.status(404).statusMessage('User Does Not Exist')}
+    else if (user == 'incorrect_password'){res.status(400).statusMessage('Incorrect Password')}
+    else if (!user.userID) { res.status(500).statusMessage("Error processing request")}
     else {
-        res.cookie("userID", userID, {
-            maxAge: 360000, // 1 hour in milliseconds
-            httpOnly: true, // Prevents access to cookie from JavaScript
-            secure: process.env.NODE_ENV === 'production', // Use HTTPS only in production
-            sameSite: 'lax' // Can be 'strict', 'lax', or 'none'
+        res.cookie("userID", user.userID, {
+            maxAge: 3600000,
+            httpOnly: true, 
+            secure: process.env.NODE_ENV === 'production', 
+            sameSite: 'lax' 
         });
-        console.log("user logged in", userID)
-        res.status(201).send(`${userID}`)
+        res.cookie("username", user.username, {
+            maxAge: 3600000,
+            httpOnly: true, 
+            secure: process.env.NODE_ENV === 'production', 
+            sameSite: 'lax' 
+        });
+        console.log("user logged in", user)
+        res.status(201).send(`${user}`)
     }
     
 })
 
 app.get('/loggedin', async (req, res) => {
-    console.log("loggedin---", req.cookies, req.cookies.userID)
-    const userID = req.cookies.userID
-    if (userID) {
-        res.send(`${userID}`)
+    const user = {
+        "userID":  req.cookies.userID,
+        "username" : req.cookies.username
+    }
+    if (user.userID) {
+        console.log("user", user)
+        res.send(user)
     } else {
         res.status(404).send(`Session Expired`)
     }
@@ -72,6 +81,7 @@ app.get('/loggedin', async (req, res) => {
 app.post('/logout', async (req, res) => {
     let userID = req.cookies.userID
     res.clearCookie('userID')
+    res.clearCookie('username')
     res.status(200).send(`${userID}`)
 })
 

@@ -1,8 +1,9 @@
 import '../App.css';
+import './components.css'
 import { execute_post } from '../actions/crud';
 
 
-export default function Question({q, onAnswer, userID}) {
+export default function Question({q, onAnswer, userID, index}) {
 
     function check(answer){
         let question =  {...q}
@@ -28,7 +29,7 @@ export default function Question({q, onAnswer, userID}) {
             if (a == q.correct_answer){
                 ans.classList.add('correct-answer')
             }
-            else {
+            else if (a == answer){
                 ans.classList.add('incorrect-answer')
             }
         })
@@ -40,12 +41,24 @@ export default function Question({q, onAnswer, userID}) {
 
     return (
       <div>
-        <div>
-            <h4>{q.category}</h4>
-            <h3>{q.question}</h3>
+        <div className = "question-container"> 
+            <div className = "full-width question-top">
+                <div className = "question-header">
+                    <p>Question {index} of 10</p>
+                    <p>Category: {q.category}</p>
+                </div>
+
+                <div className = "full-width center-text">
+                    <h3>{q.question}</h3>
+                </div>
+            </div>
+            
+            
+            
+            
             {
             q.answers.map((a) => 
-                <button key = {a} id = {a} onClick = {() => check(a)}>
+                <button className = "answer-button" key = {a} id = {a} onClick = {() => check(a)}>
                     <p>{a}</p>
                 </button>
             )

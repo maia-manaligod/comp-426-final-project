@@ -1,4 +1,4 @@
-import { BrowserRouter, Link, Routes, Route } from "react-router-dom"
+import { BrowserRouter, Link, Routes, Route, useLocation } from "react-router-dom"
 import '../App.css';
 import Questions from '../pages/questions';
 import Login from '../pages/login';
@@ -6,20 +6,56 @@ import QuestionHistory from '../pages/questionHistory';
 import User from '../pages/user';
 import Home from "../pages/home";
 import { Logout } from '../actions/logout';
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { execute_get } from "../actions/crud";
 
 export const NavBar = () => {
+    const location = useLocation();
+    console.log(location)
+
+
+    const [userID, setUserID] = useState(null)
+    const [username, setUsername] = useState(null)
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if (!userID){
+            execute_get('/loggedin').then((data) => {
+                console.log("@question, loggedin", data)
+                if (data)  {
+                    setUserID(data.userID)
+                    setUsername(data.username)
+                }
+                else navigate('/login')
+            })
+        }
+    }, [])
+   
+    
+    
+
     return (
-    <BrowserRouter>
-        <nav>
-          <Link to="/">Home</Link>
-          <Link to = "/play">Play</Link>
-          <div className = "align-right">
-            <Link to="/questionHistory">Question History</Link>
-            <Link to="/user">User</Link>
-            <Link to="/logout">Logout</Link>
-          </div>
-          
-        </nav>
+        <>
+        {location != null && location.pathname != '/login' && 
+            <nav>
+                <div className = "navbar-elements">
+                <div className = "navbar-left">
+                    <Link to="/">Home</Link>
+                    <Link to = "/play">Play</Link>
+                    <Link to="/questionHistory">Question History</Link>
+                    <Link to="/user">User Stats</Link>
+                </div>
+                
+                <div>
+                    <Link to="/logout">Log Out</Link>
+                </div>
+
+                </div>
+               
+                
+            </nav>
+        }
 
         <Routes>
           <Route path="/" element={<Home />} />
@@ -29,6 +65,7 @@ export const NavBar = () => {
           <Route path = "/user" element = {<User/>}/>
           <Route path = "/logout" element = {<Logout/>} />
         </Routes>
-      </BrowserRouter>
+        </>
+
     )
 }

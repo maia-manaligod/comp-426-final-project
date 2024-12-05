@@ -66,7 +66,10 @@ export class User{
                         return 'does_not_exist'
                     } else {
                         if (exists.password != data.password){ return 'incorrect_password'}
-                        else { return exists.id}
+                        else { return  {
+                            "userID": exists.id,
+                            "username" : exists.username
+                        }}
                         
                     }
                         
@@ -85,27 +88,28 @@ export class User{
         let {userID} = data;
         try{
             let category_results = await db.all(`
+                select category, 
+                count(case when correct_answer = user_answer then 1 end) as correct_answers, 
+                count(*) as total_answered,
+                count(case when correct_answer = user_answer then 1 end) * 1.0 /
+                count(*) as category_accuracy
+                from questions
+                where user_id = ?
+                group by category
+                order by category_accuracy desc
+            `, userID)
+
+            let overall_results = await db.get(
+                `
                 select 'Overall' as category,
                 count(case when correct_answer = user_answer then 1 end) as correct_answers,
                 count(*) as total_answered,
                 count(case when correct_answer = user_answer then 1 end) * 1.0 / count(*)  as accuracy
                 from questions
                 where user_id = ?
-
-                union all
-
-                select category, 
-                count(case when correct_answer = user_answer then 1 end) as correct_answers, 
-                count(*) as total_answers,
-                count(case when correct_answer = user_answer then 1 end) * 1.0 /
-                count(*) as category_accuracy
-                from questions
-                where user_id = ?
-                group by category
-            `, [userID, userID])
+                `
+            , userID)
     
-            
-            
             let results = await db.get(`
                 select username
                 from users 
@@ -115,6 +119,7 @@ export class User{
             console.log(category_results)
 
             results["categoryStats"] = category_results
+            results["overallStats"] = overall_results
 
             return results
         } catch (e) {

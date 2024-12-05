@@ -3,6 +3,7 @@ import axios from 'axios';
 import {useState, useEffect} from "react"
 import Question from '../components/question';
 import '../App.css'
+import './pages.css'
 import { execute_get } from '../actions/crud';
 import { useNavigate } from 'react-router-dom';
 
@@ -23,7 +24,7 @@ const Questions = () =>  {
         execute_get('/loggedin').then((data) => {
             console.log("@question, loggedin", data)
             if (data)  {
-                setUserID(data)
+                setUserID(data.userID)
                 setLoading(false)
             }
             else navigate('/login')
@@ -58,19 +59,24 @@ const Questions = () =>  {
     }
     
     return (
-        <>{!loading && 
+        <div className = "page center-elements">{!loading && 
             <>
             { questionSet === null ? 
-                    <button onClick = {() => getQuestions()}>get Questions</button> : 
+                    <div className = "column center-elements">
+                        <h2>Answer 10 trivia questions from various categories!</h2>
+                        <button className = "play-button" onClick = {() => getQuestions()}>Get Questions</button>
+                    </div>
+                     : 
                     index < 10 ? 
                     <>
-                    <p>Question {index + 1} of 10</p>
-                     <Question key = {index} q = {currentQuestion} onAnswer = {onAnswer} userID = {userID}/>
+                     <Question key = {index} q = {currentQuestion} onAnswer = {onAnswer} userID = {userID} index = {index + 1}/>
                     </>
                     : 
-                    <div>
-                        <p>You got {score}/10 questions correct.</p>
-                        <button onClick = {() => {
+                    <div className = "column center-elements">
+                        <h4>You got {score}/10 questions correct.</h4>
+                        <button 
+                            className = "play-button"
+                            onClick = {() => {
                             getQuestions()
                         }
                         }>Play Another Round</button>
@@ -79,7 +85,7 @@ const Questions = () =>  {
             </>
         }
             
-        </>
+        </div>
     )
 }
 

@@ -9,6 +9,7 @@ export default function Login(){
 
     const [loading, setLoading] = useState(true)
     const [login, setLogin] = useState(true)
+    const [message, setMessage] = useState('')
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -33,6 +34,9 @@ export default function Login(){
             event.stopPropagation()
         
             const formData = new FormData()
+
+            let button = document.getElementById('loginSubmit')
+            button.classList.add('pressed')
         
             formData.append('username', username)
             formData.append('password', password)
@@ -40,23 +44,23 @@ export default function Login(){
         
             try {
                 execute_post("/login", {'username': username, 'password' : password})
-                navigate('/')
-            //const result = await axios.post('http://localhost:8080/login', )
-            //navigate('/')
+                setTimeout(() => navigate('/'), 500)
             } catch (error) {
             console.log("error", error.message)
             }
         }
         return (
             <>
-                <h4>Login with your account</h4>
                 <form id = "loginForm" onSubmit = {loginSubmit}>
-                    <p>username</p>
+                    <p>Username</p>
                     <input name = "username" value = {username} onChange={(e) => setUsername(e.target.value)} ></input>
-                    <p>password</p>
-                    <input name = "password" value = {password} onChange={(e) => setPassword(e.target.value)}></input>
+                    <p>Password</p>
+                    <input type = "password" name = "password" value = {password} onChange={(e) => setPassword(e.target.value)}></input>
                     <p></p>
-                    <input type="submit" className = "submit"></input>
+                    <div className="center-elements">
+                        <input id = "loginSubmit" className = "submit" type="submit" value = "Log In"></input>
+                    </div>
+                    
                 </form>
             </>
             
@@ -83,22 +87,22 @@ export default function Login(){
         
             try {
                 execute_post("/signup", {'username': username, 'password' : password})
-            //const result = await axios.post('http://localhost:8080/login', )
-            //navigate('/')
             } catch (error) {
             console.log("error", error.message)
         }
     }
         return (
             <>
-                <h4>Sign Up to Register Your Account</h4>
                 <form id = "signupForm" onSubmit={signupSubmit}> 
-                    <p>username</p>
+                    <p>Username</p>
                     <input name = "username" value = {username} onChange={(e) => setUsername(e.target.value)} ></input>
-                    <p>password</p>
+                    <p>Password</p>
                     <input name = "password" value = {password} onChange={(e) => setPassword(e.target.value)}></input>
                     <p></p>
-                    <input type="submit"></input>
+                    <div className="center-elements">
+                        <input className = "submit" type="submit" value = "Sign Up"></input>
+                    </div>
+                    
                 </form>
             </>
             
@@ -117,15 +121,21 @@ export default function Login(){
     return (
         <div className = "loginbg">
         {!loading && 
-                <div className = "column center-elements">
-                    <div className = "row">
-                        <button onClick = {setLoginTrue}>Login</button>
-                        <button onClick = {setLoginFalse}>Sign Up</button>
+            <div className = "login-page">
+                <h1>BRAINIAC</h1>
+                <p>Answer trivia and track your progress!</p>
+                <div className = "login-box-container">
+                    <div className = "space-between">
+                        <button className = {login ? "tab-button" : "tab-button-deselected"} onClick = {setLoginTrue}>Login</button>
+                        <button className =  {!login ? "tab-button" : "tab-button-deselected"} onClick = {setLoginFalse}>Sign Up</button>
                     </div>
-                <div className = "login-box column">
-                    {login ? <LoginForm/> : <SignUpForm/>}
+                    <div className = "login-box column">
+                        {login ? <LoginForm/> : <SignUpForm/>}
+                    </div>
                 </div>
-               
+                <div className = {message ? "notification" : ""}>
+                    <p>{message}fsdfs</p>
+                </div>
             </div>
         }
         </div>

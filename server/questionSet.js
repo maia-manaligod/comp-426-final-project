@@ -16,7 +16,6 @@ export class QuestionSet{
         let response = await fetch('https://opentdb.com/api.php?amount=10&difficulty=medium&type=multiple')
         let data = await response.json()
 
-        //let questions = data.results
         let questions = []
 
 
@@ -105,10 +104,12 @@ export class QuestionSet{
                     `select * from questions left join answers on questions.id = answers.question_id
                     where user_id = ${userID}
                     order by id desc
-                    limit 20 offset ${offset}`
+                    limit 10 offset ${offset}`
                 )
 
-                let res = questions.map((q) => {
+                let res = {}
+
+                res.questions = questions.map((q) => {
                     return {
                         "question": q.question, 
                         "correct_answer": q.correct_answer, 
@@ -117,7 +118,16 @@ export class QuestionSet{
                         "category" : q.category
                     }
                 })
-                console.log("fin", res)
+
+                if (offset != 0) res.prev = true
+                let {count: total} = await db.get(
+                    `select count(*) as count from questions where user_id = ?`, userID
+                )
+
+
+                
+                if ((parseInt(offset) + 10) < total) res.next = true
+                console.log("fin", (parseInt(offset) + 10),total, res)
                 return res
         } catch (e) {
             console.log("error", e)
@@ -145,6 +155,12 @@ export class QuestionSet{
         '&Uuml;': 'Ü',
         '&Auml;': 'Ä',
         '&Ouml;': 'Ö',
+        '&aacute;': 'á',
+        '&Aacute;': 'Á',
+        '&eacute;': 'é',
+        '&Eacute;': 'É',
+        '&lt;' : '<',
+        '&gt;' : '>'
     };
 
     html = html.replace(/&[a-zA-Z0-9#]+;/g, (match) => namedEntities[match] || match);
