@@ -53,6 +53,8 @@ form input {
 
 .tab-button {
     background-color: white;
+    color: black;
+    font-weight: normal;
     width: 180px;
     border: 0px;
     float: left;
@@ -66,6 +68,7 @@ form input {
 
 .tab-button-deselected {
     background-color: #e65296;
+    font-weight: normal;
     width: 180px;
     border: 0px;
     float: right;
@@ -129,7 +132,8 @@ p a {
     background-color: #edc1d3;
     color: #330e1e;
     width: 100px;
-    float: right
+    float: right;
+    font-weight: normal;
 }
 
 .nav-button-prev {
@@ -140,6 +144,7 @@ p a {
     color: #330e1e;
     width: 100px;
     float: left;
+    font-weight: normal;
 }
 
 .questionsParent {
@@ -189,7 +194,6 @@ p a {
 .login-page{
     color: white;
     text-align: center;
-    border: 2px solid red;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -204,6 +208,7 @@ p a {
 
 .notification{
     background-color: #e65296;
+    color: white;
     width: 92%;
     display: flex;
     align-items: center;
@@ -211,6 +216,67 @@ p a {
     padding: 5px;
     text-align: center;
 }
+.navbar-right {
+    display: flex;
+    gap: 50px
+}
+
+.account-button-container {
+    display: flex;
+    gap: 20px;
+}
+
+.editForm{ 
+    border: 1px solid gray;
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.cancel-button{
+    padding: 10px;
+    border: 1px solid rgb(211, 211, 211);
+    border-radius: 5px;
+    width: 90px
+}
+
+.edit-form-buttons{
+    display: flex;
+    gap: 10px;
+}
+
+
+.center-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 20px;
+}
+
+
+.edit-button{
+    background-color : #14a185;
+    padding: 10px;
+    color: white;
+    border: 0px;
+    border-radius: 5px;
+}
+
+.delete-button{
+    background-color : #e65296;
+    padding: 10px;
+    color: white;
+    border: 0px;
+    border-radius: 5px;
+}
+
+.title-header{
+    background-color: #e65296;
+    padding: 20px;
+    width: 85%;
+    border-radius: 10px;
+}
+
 
 
 

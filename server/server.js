@@ -27,42 +27,46 @@ app.post('/question', async (req, res)  => {
 
 app.post('/signup', async (req, res) => {
     console.log("request",req.body)
-    
-    let user = await User.createUser(req.body)
-    console.log(user)
-    if (user == 'exists') res.status(400).send('Username already exists.');
-    else if (!user) res.status(500).send('Error processing request');
+    if (req.body.username == '' || req.body.password == '')  res.status(404).json('Please fill out both fields.')
     else {
-        res.status(201).json(user)
+        let user = await User.createUser(req.body)
+        console.log(user)
+        if (user == 'exists') res.status(400).json('Username already exists.');
+        else if (!user) res.status(500).json('Error processing request');
+        else {
+            res.status(201).json(user)
+        }
     }
 }) 
 
 app.post('/login', async(req, res) => {
     const {username, password} = req.body
     console.log("req", req, req.body, username, password)
-    if (!username || !password) res.status(404).statusMessage('Please fill out both fields')
+    if (username == '' || password == '') res.status(404).json('Please fill out both fields.')
     
-    let user = await User.login(req.body)
-    if (user == 'does_not_exist'){ res.status(404).statusMessage('User Does Not Exist')}
-    else if (user == 'incorrect_password'){res.status(400).statusMessage('Incorrect Password')}
-    else if (!user.userID) { res.status(500).statusMessage("Error processing request")}
     else {
-        res.cookie("userID", user.userID, {
-            maxAge: 3600000,
-            httpOnly: true, 
-            secure: process.env.NODE_ENV === 'production', 
-            sameSite: 'lax' 
-        });
-        res.cookie("username", user.username, {
-            maxAge: 3600000,
-            httpOnly: true, 
-            secure: process.env.NODE_ENV === 'production', 
-            sameSite: 'lax' 
-        });
-        console.log("user logged in", user)
-        res.status(201).send(`${user}`)
+        let user = await User.login(req.body)
+        console.log(user)
+        if (user == 'does_not_exist'){ res.status(404).json('User does not exist.')}
+        else if (user == 'incorrect_password'){res.status(400).json('Incorrect Password.')}
+        else if (!user.userID) { res.status(500).json('Error processing request.')}
+        else {
+            res.cookie("userID", user.userID, {
+                maxAge: 3600000,
+                httpOnly: true, 
+                secure: process.env.NODE_ENV === 'production', 
+                sameSite: 'lax' 
+            });
+            res.cookie("username", user.username, {
+                maxAge: 3600000,
+                httpOnly: true, 
+                secure: process.env.NODE_ENV === 'production', 
+                sameSite: 'lax' 
+            });
+            console.log("user logged in", user)
+            res.status(201).send({"user": `${user}`})
+        }
     }
-    
 })
 
 app.get('/loggedin', async (req, res) => {
@@ -98,6 +102,51 @@ app.get(`/userStats`, async (req, res) => {
     const userStats = await User.getUserStats(req.query)
     if (!userStats) res.status(500).send('bad')
     else res.status(201).json(userStats)
+})
+
+app.put('/user', async (req, res) => {
+    const user = await User.update(req.body)
+    if (req.body.username == '') res.status(404).json('Invalid username');
+    else if (user == 'incorrect password') res.status(404).json('Incorrect Password');
+    else if (!user) res.status(500).json('Internal Server Error')
+    else {
+        res.cookie('username', req.body.username, { maxAge: 3600000, httpOnly: true });
+        res.status(200).json('Username Updated')
+    }
+})
+
+app.delete('/user', async (req, res) => {
+    const user = await User.delete(req.body)
+    if (!user) res.status(500).json('Internal Server Error');
+    else {
+        res.clearCookie('username')
+        res.clearCookie('userID')
+        res.status(200).json("User Deleted")
+    }
+})
+
+app.post('/myQuestions', async (req, res) => {
+    const question = await QuestionSet.createMyQuestion(req.body)
+    if (!question) res.status(500).json('Internal Server Error');
+    else res.status(200).json("Question Created")
+})
+
+app.get('/myQuestions', async (req, res) => {
+    const questions = await QuestionSet.getMyQuestions(req.query)
+    if (!questions) res.status(500).json('Internal Server Error');
+    else res.status(200).json(questions)
+})
+
+app.put('/myQuestions', async (req, res) => {
+    const questions = await QuestionSet.updateMyQuestion(req.body)
+    if (!questions) res.status(500).json('Internal Server Error');
+    else res.status(200).json(questions) 
+})
+
+app.delete('/myQuestions', async (req, res) => {
+    const questions = await QuestionSet.deleteMyQuestion(req.body)
+    if (!questions) res.status(500).json('Internal Server Error');
+    else res.status(200).json(questions)  
 })
 
 

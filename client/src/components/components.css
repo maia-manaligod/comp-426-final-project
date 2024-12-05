@@ -1,6 +1,15 @@
+button {
+    background-color: #14a195;
+    border: 0px solid black;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    font-size: 15px;
+    padding: 10px;
+}
+
 .question-container {
     width: 500px;
-    border: 2px solid yellowgreen
 }
 
 .answered-question-container{
@@ -26,6 +35,8 @@
     border: 1px solid grey;
     border-radius: 5px;
     font-size: 16px;
+    color: black;
+    font-weight: normal;
 }
 
 .correct-answer{
@@ -51,6 +62,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
 } 
 
 .category {
@@ -62,3 +74,56 @@
     justify-content: space-between;
 }
 
+.question-form{
+    display: flex;
+    gap: 30px;
+    padding: 40px;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.question-form form{
+    gap: 10px;
+    line-height: 30px;
+    display: flex;
+    border: 2px solid #14a195;
+    width: 500px;
+    padding: 40px;
+    align-items: center;
+    line-height: 35px;
+    border-radius: 10px;
+}
+
+.separate-answers{
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+}
+
+.answer-container{
+    display: flex;
+}
+
+.new-question-header{
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 10px;
+    gap: 10px;
+}
+
+
+.my-question-button{
+    background-color: white;
+    color: black;
+    border: 1px solid gray;
+    font-weight: normal;
+}
+
+.edit-button-container{
+    display: flex;
+    gap: 5px;
+    height: 1px;
+    align-items: center;
+    justify-content: center;
+}

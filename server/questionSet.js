@@ -96,8 +96,8 @@ export class QuestionSet{
     }
 
     static async getQuestionHistory(data){
-        let {userID, offset} = data
-        console.log(userID, offset)
+        let {userID, offset, category} = data
+        console.log(userID, offset, category)
 
         try {
                 const questions = await db.all(
@@ -135,6 +135,106 @@ export class QuestionSet{
         }
     }
 
+    static async getMyQuestions(data){
+        let {userID} = data
+        console.log(userID, data)
+
+        const questions = await db.all(
+            `select my_questions.id AS question_id, my_questions.category, my_questions.question, my_questions.correct_answer, 
+                    my_question_answers.answer_1, my_question_answers.answer_2, my_question_answers.answer_3, my_question_answers.answer_4
+             from my_questions 
+             left join my_question_answers ON my_questions.id = my_question_answers.question_id
+             where my_questions.user_id = ?
+             order by my_questions.id desc`,
+            userID
+        );
+
+        console.log("questions!!!!", questions)
+
+        let res = {}
+
+        res = questions.map((q) => {
+            return {
+                "id" : q.question_id,
+                "question": q.question, 
+                "correct_answer": q.correct_answer, 
+                "answers": [q.answer_1, q.answer_2, q.answer_3, q.answer_4],
+                "category" : q.category
+            }
+        })
+
+        console.log("q:", questions, "r", res)
+
+        return res
+    }
+
+    static async createMyQuestion(data){
+        console.log(data)
+
+        const result1 = await db.run(
+            'insert into my_questions (question, user_id, correct_answer, category) values (?, ?, ?, ?)',
+            data.question,
+            data.userID,
+            data.correctAnswer,
+            data.category
+        );
+
+        const question_id = result1.lastID
+
+
+
+        //post answers
+        const result2 = await db.run(
+            'insert into my_question_answers (question_id, answer_1, answer_2, answer_3, answer_4) values (?, ?, ?, ?, ?)',
+            question_id, 
+            data.correctAnswer, 
+            data.incorrectAnswers[0], 
+            data.incorrectAnswers[1], 
+            data.incorrectAnswers[2]
+        ); 
+    }
+
+    static async updateMyQuestion(data){
+        let {editableQuestion, userID, question} = data
+        console.log(question, question.question, question.id)
+
+
+        if (question.question != editableQuestion.question || question.correct_answer != editableQuestion.correct_answer){
+            let result = await db.run(
+                'update my_questions set question = ?, correct_answer = ? where id = ?',  editableQuestion.question, editableQuestion.correct_answer, question.id, userID
+            )
+    
+        }
+        
+        let result2 = await db.run(
+            'update my_question_answers set answer_1 = ?, answer_2 = ?, answer_3 = ?, answer_4 = ?  where question_id = ?',  
+            editableQuestion.answers[0], editableQuestion.answers[1], editableQuestion.answers[2], editableQuestion.answers[3], question.id,
+        )
+
+        return result2
+
+        
+    }
+
+    static async deleteMyQuestion(data){
+        console.log("data:", data.id, data)
+
+        await db.run(
+            `DELETE FROM my_questions
+            WHERE id = ?`,
+            data.id
+        );
+
+        await db.run(
+            `DELETE FROM my_question_answers
+            WHERE question_id = ?`,
+            data.id
+        );
+
+        return true
+
+    }
+
 
 
     static decodeHtml (html) {
@@ -147,6 +247,7 @@ export class QuestionSet{
         '&lt;': '<',
         '&gt;': '>',
         '&#39;': "'",
+        '&#039;': "'",
         '&apos;': "'",
         '&deg;': '°',
         '&uuml;': 'ü',
@@ -160,7 +261,9 @@ export class QuestionSet{
         '&eacute;': 'é',
         '&Eacute;': 'É',
         '&lt;' : '<',
-        '&gt;' : '>'
+        '&gt;' : '>',
+        '&ldquo;' : '"',
+        '&rdquo;' : '"'
     };
 
     html = html.replace(/&[a-zA-Z0-9#]+;/g, (match) => namedEntities[match] || match);

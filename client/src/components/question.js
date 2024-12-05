@@ -16,11 +16,9 @@ export default function Question({q, onAnswer, userID, index}) {
         
 
         if (answer == q.correct_answer){
-            console.log('correct!')
             onAnswer(true)
         }
         else {
-            console.log("incorrect")
             onAnswer(false)
         }
 
@@ -33,10 +31,6 @@ export default function Question({q, onAnswer, userID, index}) {
                 ans.classList.add('incorrect-answer')
             }
         })
-
-        
-        //change color
-        //send data to database
     }
 
     return (
@@ -52,9 +46,7 @@ export default function Question({q, onAnswer, userID, index}) {
                     <h3>{q.question}</h3>
                 </div>
             </div>
-            
-            
-            
+
             
             {
             q.answers.map((a) => 

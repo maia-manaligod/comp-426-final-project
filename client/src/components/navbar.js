@@ -9,6 +9,8 @@ import { Logout } from '../actions/logout';
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { execute_get } from "../actions/crud";
+import Account from "../pages/account";
+import { Create } from "../pages/create";
 
 export const NavBar = () => {
     const location = useLocation();
@@ -18,21 +20,6 @@ export const NavBar = () => {
     const [userID, setUserID] = useState(null)
     const [username, setUsername] = useState(null)
     const navigate = useNavigate()
-
-    useEffect(() => {
-        if (!userID){
-            execute_get('/loggedin').then((data) => {
-                console.log("@question, loggedin", data)
-                if (data)  {
-                    setUserID(data.userID)
-                    setUsername(data.username)
-                }
-                else navigate('/login')
-            })
-        }
-    }, [])
-   
-    
     
 
     return (
@@ -45,9 +32,11 @@ export const NavBar = () => {
                     <Link to = "/play">Play</Link>
                     <Link to="/questionHistory">Question History</Link>
                     <Link to="/user">User Stats</Link>
+                    <Link to ="/create">Create</Link>
                 </div>
                 
-                <div>
+                <div className = "navbar-right">
+                    <Link to = "/account">Account</Link>
                     <Link to="/logout">Log Out</Link>
                 </div>
 
@@ -64,6 +53,8 @@ export const NavBar = () => {
           <Route path = "/questionHistory" element = {<QuestionHistory/>}/>
           <Route path = "/user" element = {<User/>}/>
           <Route path = "/logout" element = {<Logout/>} />
+          <Route path = "/account" element = {<Account/>} />
+          <Route path = "/create" element = {<Create/>} />
         </Routes>
         </>
 

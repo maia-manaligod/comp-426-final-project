@@ -15,8 +15,7 @@ export default function Home() {
     useEffect(() => {
         if (!userID && !stats){
             execute_get('/loggedin').then((data) => {
-                console.log(data)
-                if ("data:", data) {
+                if (!data.error) {
                     setUserID(data.userID)
                     getStats(data.userID)           
                 }   
@@ -44,7 +43,7 @@ export default function Home() {
         <>
         { !loading  && 
             <div className = "home-page-stats">
-                <h2>Braniac</h2>
+                <h2>Brainiac</h2>
                 <h1>{username}</h1>
                 {   stats.total_answered > 0 ? 
                     <div>
@@ -60,7 +59,7 @@ export default function Home() {
                     : 
                     <div className = "no-questions">
                         <p>You haven't answered any questions yet.</p>
-                        <button className = "play-button"><a href = "/play">Play a round&gt;&gt;</a> </button>
+                        <a href = "/play"><button className = "play-button">Play a round&gt;&gt; </button></a>
                     </div> 
                 }
             </div>

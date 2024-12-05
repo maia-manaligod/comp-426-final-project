@@ -1,6 +1,7 @@
 import '../App.css'
 import './components.css'
 export const AnsweredQuestion = ({question}) => {
+    console.log(question.question)
     return (
         <div className = "answered-question-container">
             <div className = "question-header">

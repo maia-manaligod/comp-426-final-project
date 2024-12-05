@@ -1,7 +1,6 @@
 import { PercentageBar } from "./percentageBar"
 
 export const CategoryStats = ({category, correct_answers, total_answered, accuracy}) => {
-    console.log(category, correct_answers, total_answered, accuracy)
     let percentage = Math.round(accuracy * 100)
     return (
         <>

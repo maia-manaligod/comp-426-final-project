@@ -109,6 +109,9 @@ nav a {
 .page {
   padding: 50px;
   line-height: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px
 }
 
 .full-width{

@@ -13,12 +13,14 @@ export default function Login(){
     const navigate = useNavigate()
 
     useEffect(() => {
-        execute_get('/loggedin').then((data) => {
-            console.log(data)
-            if (!data)  setLoading(false)
-            else navigate('/')
-        })
-
+        try {
+            execute_get('/loggedin').then((data) => {
+                if (data.error)  setLoading(false)
+                else navigate('/')
+            })
+        } catch (e) {
+            console.log("error retrieving loggedin")
+        }
     }, [])
     
     const LoginForm = () => {
@@ -26,8 +28,6 @@ export default function Login(){
         const [username, setUsername] = useState('')
         const [password, setPassword] = useState('')
 
-
-        
 
         const loginSubmit = async (event) => {
             event.preventDefault()
@@ -40,11 +40,13 @@ export default function Login(){
         
             formData.append('username', username)
             formData.append('password', password)
-            console.log(formData, formData.password, formData.username)
         
             try {
-                execute_post("/login", {'username': username, 'password' : password})
-                setTimeout(() => navigate('/'), 500)
+                execute_post("/login", {'username': username, 'password' : password}).then((data) => {
+                    if (!data.error) setTimeout(() => navigate('/'), 500)
+                    else setMessage(data.error_message) ; console.log(data.error_message, data.body)
+                })
+                
             } catch (error) {
             console.log("error", error.message)
             }
@@ -86,7 +88,13 @@ export default function Login(){
             console.log(formData, formData.password, formData.username)
         
             try {
-                execute_post("/signup", {'username': username, 'password' : password})
+                execute_post("/signup", {'username': username, 'password' : password}).then ((data) => {
+                    if (!data.error) {
+                        setMessage("You have created your account! Please log in.")
+                        setLogin(true)
+                    }
+                    else setMessage(data.error_message) ; console.log(data.error_message, data.body)
+                })
             } catch (error) {
             console.log("error", error.message)
         }
@@ -97,7 +105,7 @@ export default function Login(){
                     <p>Username</p>
                     <input name = "username" value = {username} onChange={(e) => setUsername(e.target.value)} ></input>
                     <p>Password</p>
-                    <input name = "password" value = {password} onChange={(e) => setPassword(e.target.value)}></input>
+                    <input name = "password" type = "password" value = {password} onChange={(e) => setPassword(e.target.value)}></input>
                     <p></p>
                     <div className="center-elements">
                         <input className = "submit" type="submit" value = "Sign Up"></input>
@@ -122,8 +130,10 @@ export default function Login(){
         <div className = "loginbg">
         {!loading && 
             <div className = "login-page">
-                <h1>BRAINIAC</h1>
-                <p>Answer trivia and track your progress!</p>
+                <div className = "title-header">
+                    <h1>BRAINIAC</h1>
+                    <p>Create and answer trivia questions!</p>
+                </div>
                 <div className = "login-box-container">
                     <div className = "space-between">
                         <button className = {login ? "tab-button" : "tab-button-deselected"} onClick = {setLoginTrue}>Login</button>
@@ -134,7 +144,7 @@ export default function Login(){
                     </div>
                 </div>
                 <div className = {message ? "notification" : ""}>
-                    <p>{message}fsdfs</p>
+                    <p>{message}</p>
                 </div>
             </div>
         }

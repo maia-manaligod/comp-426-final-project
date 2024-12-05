@@ -22,7 +22,6 @@ const Questions = () =>  {
 
     if (!userID){
         execute_get('/loggedin').then((data) => {
-            console.log("@question, loggedin", data)
             if (data)  {
                 setUserID(data.userID)
                 setLoading(false)

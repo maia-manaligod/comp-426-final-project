@@ -83,7 +83,6 @@ export class User{
 
     }
 
-
     static async getUserStats(data){
         let {userID} = data;
         try{
@@ -127,5 +126,62 @@ export class User{
             return null
         }
     }
+
+    static async update(data){
+        let {user_id, username, password} = data
+
+        console.log(data)
+
+        let old_data = await db.get(
+            `select password
+            from users
+            where id = ?`, 
+            user_id
+        )
+
+        console.log(old_data)
+
+        if (old_data.password != password) return 'incorrect password'
+
+        try {
+            let result = await db.run(
+                'update users set username = ? where id = ?', username, user_id
+            )
+    
+            return result
+        }
+        catch (e) {
+            return null
+        }
+        
+    }
+
+    static async delete(data){
+        let {user_id} = data
+
+        try {
+            await db.run(
+                `DELETE FROM users
+                WHERE id = ?`,
+                user_id
+            );
+        
+            await db.run(
+                `DELETE FROM questions
+                WHERE user_id = ?`,
+                user_id
+            );
+            
+            console.log("ran")
+        
+            return true
+        } catch (e) {
+            console.log("error", e)
+            return null
+        }
+
+
+    }
+
 
 }

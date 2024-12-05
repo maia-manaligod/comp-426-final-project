@@ -48,4 +48,27 @@ await db.run(`
     )
   `);
 
+  await db.run(`
+    CREATE TABLE IF NOT EXISTS my_questions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      question TEXT NOT NULL,
+      correct_answer TEXT NOT NULL,
+      category TEXT NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES users(id)
+    )
+  `);
+
+  await db.run(`
+    CREATE TABLE IF NOT EXISTS my_question_answers (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      question_id INTEGER NOT NULL,
+      answer_1 TEXT NOT NULL,
+      answer_2 TEXT NOT NULL,
+      answer_3 TEXT NOT NULL,
+      answer_4 TEXT NOT NULL,
+      FOREIGN KEY (question_id) REFERENCES questions(id)
+    )
+  `);
+
 db.close();
